@@ -36,6 +36,20 @@
   <script src="static/js/bulma-carousel.min.js"></script>
   <script src="static/js/bulma-slider.min.js"></script>
   <script src="static/js/index.js"></script>
+
+  <style>
+    /* 统一控制主标题与子标题的间距 */
+    .section-title {
+      margin-bottom: 1rem !important; /* 减小主标题下方间距 */
+    }
+    .carousel-subtitle {
+      margin-top: 0.5rem !important; /* 减小子标题上方间距 */
+      margin-bottom: 0.75rem !important; /* 减小子标题下方间距 */
+    }
+    .carousel-desc {
+      margin-bottom: 1rem !important; /* 控制描述文字下方间距 */
+    }
+  </style>
 </head>
 <body>
 
@@ -47,7 +61,6 @@
           <div class="column has-text-centered">
             <h1 class="title is-1 publication-title">[AAAI 2026] Anomagic: Crossmodal Prompt-driven Zero-shot Anomaly Generation</h1>
             <div class="is-size-5 publication-authors">
-              <!-- Paper authors -->
               <span class="author-block">
                 <a href="https://github.com/yuxin-jiang" target="_blank">Yuxin Jiang</a><sup>1</sup>,</span>
               <span class="author-block">
@@ -72,7 +85,6 @@
 
             <div class="column has-text-centered">
               <div class="publication-links">
-                <!-- Project Page link -->
                 <span class="link-block">
                   <a href="https://github.com/yuxin-jiang/Anomagic" target="_blank" class="external-link button is-normal is-rounded is-dark">
                   <span class="icon">
@@ -82,7 +94,6 @@
                 </a>
               </span>
 
-              <!-- Paper link -->
               <span class="link-block">
                 <a href="https://arxiv.org/pdf/2511.10020" target="_blank" class="external-link button is-normal is-rounded is-dark">
                 <span class="icon">
@@ -92,7 +103,6 @@
               </a>
             </span>
 
-            <!-- Code link -->
             <span class="link-block">
               <a href="https://github.com/yuxin-jiang/Anomagic" target="_blank" class="external-link button is-normal is-rounded is-dark">
               <span class="icon">
@@ -102,7 +112,6 @@
             </a>
           </span>
 
-          <!-- HuggingFace Demo link -->
           <span class="link-block">
             <a href="https://huggingface.co/spaces/yuxin-jiang/Anomagic" target="_blank" class="external-link button is-normal is-rounded is-dark">
             <span class="icon">
@@ -137,47 +146,45 @@
 </section>
 
 <!-- Method & Dataset Section -->
-<section class="hero is-light is-small">
-  <div class="hero-body">
-    <div class="container">
-      <h2 class="title is-3 has-text-centered">Method & Dataset</h2>
-      <!-- 增加轮播容器的内边距，避免遮挡 -->
-      <div id="method-carousel" class="carousel results-carousel" style="padding: 20px 0 40px;">
-        <!-- Method Framework -->
-        <div class="item">
-          <div class="columns is-multiline">
-            <div class="column is-full has-text-centered">
-              <h3 class="subtitle is-4">Overall Framework of Anomagic</h3>
-              <p class="is-size-6 has-text-grey">The crossmodal prompt-driven zero-shot anomaly generation pipeline with contrastive refinement.</p>
-            </div>
-            <div class="column is-full has-text-centered">
-              <!-- 增大最大高度实现放大效果，保持宽高比和完整显示 -->
-              <img src="static/images/method.png" alt="Anomagic Framework" 
-                   style="max-height: 520px; /* 原400px基础上增加30% */
-                          width: 90%; /* 增加宽度占比 */
-                          max-width: none;
-                          object-fit: contain;
-                          margin: 0 auto;"/>
-            </div>
+<section class="section">
+  <div class="container is-max-desktop">
+    <!-- 主标题添加自定义类控制间距 -->
+    <h2 class="title is-3 has-text-centered section-title">Method & Dataset</h2>
+    <div id="method-carousel" class="carousel results-carousel" style="padding: 10px 0 30px;">
+      <!-- Method Framework -->
+      <div class="item">
+        <div class="columns is-multiline">
+          <div class="column is-full has-text-centered">
+            <!-- 子标题添加自定义类控制间距 -->
+            <h3 class="subtitle is-4 carousel-subtitle">Overall Framework of Anomagic</h3>
+            <!-- 描述文字添加自定义类控制间距 -->
+            <p class="is-size-6 has-text-grey carousel-desc">The crossmodal prompt-driven zero-shot anomaly generation pipeline with contrastive refinement.</p>
+          </div>
+          <div class="column is-full has-text-centered">
+            <img src="static/images/method.png" alt="Anomagic Framework" 
+                 style="max-height: 520px;
+                        width: 90%;
+                        max-width: none;
+                        object-fit: contain;
+                        margin: 0 auto;"/>
           </div>
         </div>
+      </div>
 
-        <!-- Dataset Overview -->
-        <div class="item">
-          <div class="columns is-multiline">
-            <div class="column is-full has-text-centered">
-              <h3 class="subtitle is-4">Overview of AnomVerse</h3>
-              <p class="is-size-6 has-text-grey">A comprehensive dataset with 12,987 anomaly-mask-caption triplets from 13 public datasets.</p>
-            </div>
-            <div class="column is-full has-text-centered">
-              <!-- 与method图保持一致的放大比例 -->
-              <img src="static/images/dataset.png" alt="AnomVerse Dataset" 
-                   style="max-height: 520px; /* 原400px基础上增加30% */
-                          width: 90%; /* 增加宽度占比 */
-                          max-width: none;
-                          object-fit: contain;
-                          margin: 0 auto;"/>
-            </div>
+      <!-- Dataset Overview -->
+      <div class="item">
+        <div class="columns is-multiline">
+          <div class="column is-full has-text-centered">
+            <h3 class="subtitle is-4 carousel-subtitle">Overview of AnomVerse</h3>
+            <p class="is-size-6 has-text-grey carousel-desc">A comprehensive dataset with 12,987 anomaly-mask-caption triplets from 13 public datasets.</p>
+          </div>
+          <div class="column is-full has-text-centered">
+            <img src="static/images/dataset.png" alt="AnomVerse Dataset" 
+                 style="max-height: 520px;
+                        width: 90%;
+                        max-width: none;
+                        object-fit: contain;
+                        margin: 0 auto;"/>
           </div>
         </div>
       </div>
@@ -186,48 +193,47 @@
 </section>
 
 <!-- Inference Results -->
-<section class="hero is-light is-small">
-  <div class="hero-body">
-    <div class="container">
-      <h2 class="title is-3 has-text-centered">Anomaly Inference Results</h2>
-      <div id="results-carousel" class="carousel results-carousel">
-        <!-- Industrial Datasets -->
-        <div class="item">
-          <div class="columns is-multiline">
-            <div class="column is-full has-text-centered">
-              <h3 class="subtitle is-4">Industrial Datasets (VisA & MVTecAD)</h3>
-              <p class="is-size-6 has-text-grey">Synthesized anomalies on objects like PCBs and capsules, with precise defect localization.</p>
-            </div>
-            <div class="column is-full has-text-centered">
-              <img src="static/images/zero_mvtec_visa.png" alt="VisA & MVTecAD Example" style="width: 80%; max-width: 800px;"/>
-            </div>
+<section class="section">
+  <div class="container is-max-desktop">
+    <!-- 主标题添加自定义类控制间距 -->
+    <h2 class="title is-3 has-text-centered section-title">Anomaly Inference Results</h2>
+    <div id="results-carousel" class="carousel results-carousel">
+      <!-- Industrial Datasets -->
+      <div class="item">
+        <div class="columns is-multiline">
+          <div class="column is-full has-text-centered">
+            <h3 class="subtitle is-4 carousel-subtitle">Industrial Datasets (VisA & MVTecAD)</h3>
+            <p class="is-size-6 has-text-grey carousel-desc">Synthesized anomalies on objects like PCBs and capsules, with precise defect localization.</p>
+          </div>
+          <div class="column is-full has-text-centered">
+            <img src="static/images/zero_mvtec_visa.png" alt="VisA & MVTecAD Example" style="width: 80%; max-width: 800px;"/>
           </div>
         </div>
+      </div>
 
-        <!-- Medical Imaging -->
-        <div class="item">
-          <div class="columns is-multiline">
-            <div class="column is-full has-text-centered">
-              <h3 class="subtitle is-4">Medical Imaging</h3>
-              <p class="is-size-6 has-text-grey">Anomalies in brain tumors (BraTS) and retinal scans (OCT), preserving anatomical fidelity.</p>
-            </div>
-            <div class="column is-full has-text-centered">
-              <img src="static/images/zero_medical.png" alt="Medical Example" style="width: 80%; max-width: 800px;"/>
-              <p class="is-size-6 has-text-grey mt-2"><em>BraTS and OCT [deVerdier et al. 2024, Kermany et al. 2018]: Brain MRI and Retinal OCT with enhanced tumor region</em></p>
-            </div>
+      <!-- Medical Imaging -->
+      <div class="item">
+        <div class="columns is-multiline">
+          <div class="column is-full has-text-centered">
+            <h3 class="subtitle is-4 carousel-subtitle">Medical Imaging</h3>
+            <p class="is-size-6 has-text-grey carousel-desc">Anomalies in brain tumors (BraTS) and retinal scans (OCT), preserving anatomical fidelity.</p>
+          </div>
+          <div class="column is-full has-text-centered">
+            <img src="static/images/zero_medical.png" alt="Medical Example" style="width: 80%; max-width: 800px;"/>
+            <p class="is-size-6 has-text-grey mt-2"><em>BraTS and OCT [deVerdier et al. 2024, Kermany et al. 2018]: Brain MRI and Retinal OCT with enhanced tumor region</em></p>
           </div>
         </div>
+      </div>
 
-        <!-- Web-Crawled Real-World Objects -->
-        <div class="item">
-          <div class="columns is-multiline">
-            <div class="column is-full has-text-centered">
-              <h3 class="subtitle is-4">Web-Crawled Real-World Objects</h3>
-              <p class="is-size-6 has-text-grey">Diverse everyday items with realistic anomalies, sourced from web images.</p>
-            </div>
-            <div class="column is-full has-text-centered">
-              <img src="static/images/zero_web.png" alt="Web Example" style="width: 80%; max-width: 800px;"/>
-            </div>
+      <!-- Web-Crawled Real-World Objects -->
+      <div class="item">
+        <div class="columns is-multiline">
+          <div class="column is-full has-text-centered">
+            <h3 class="subtitle is-4 carousel-subtitle">Web-Crawled Real-World Objects</h3>
+            <p class="is-size-6 has-text-grey carousel-desc">Diverse everyday items with realistic anomalies, sourced from web images.</p>
+          </div>
+          <div class="column is-full has-text-centered">
+            <img src="static/images/zero_web.png" alt="Web Example" style="width: 80%; max-width: 800px;"/>
           </div>
         </div>
       </div>
@@ -267,7 +273,6 @@
 <!-- Carousel Initialization Script -->
 <script>
   $(document).ready(function() {
-    // 初始化方法与数据集轮播
     $('#method-carousel').carousel({
       slidesPerPage: 1,
       loop: true,
@@ -276,7 +281,6 @@
       pagination: true
     });
     
-    // 初始化结果轮播
     $('#results-carousel').carousel({
       slidesPerPage: 1,
       loop: true,
