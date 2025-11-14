@@ -141,7 +141,8 @@
   <div class="hero-body">
     <div class="container">
       <h2 class="title is-3 has-text-centered">Method & Dataset</h2>
-      <div id="method-carousel" class="carousel results-carousel">
+      <!-- 增加轮播容器的内边距，避免遮挡 -->
+      <div id="method-carousel" class="carousel results-carousel" style="padding: 20px 0 40px;">
         <!-- Method Framework -->
         <div class="item">
           <div class="columns is-multiline">
@@ -150,10 +151,13 @@
               <p class="is-size-6 has-text-grey">The crossmodal prompt-driven zero-shot anomaly generation pipeline with contrastive refinement.</p>
             </div>
             <div class="column is-full has-text-centered">
-              <!-- 放大1.3倍，保持比例和居中 -->
-              <div style="transform: scale(1.3); transform-origin: center; overflow: visible;">
-                <img src="static/images/method.png" alt="Anomagic Framework" style="max-height: 400px; width: auto; object-fit: contain;"/>
-              </div>
+              <!-- 增大最大高度实现放大效果，保持宽高比和完整显示 -->
+              <img src="static/images/method.png" alt="Anomagic Framework" 
+                   style="max-height: 520px; /* 原400px基础上增加30% */
+                          width: 90%; /* 增加宽度占比 */
+                          max-width: none;
+                          object-fit: contain;
+                          margin: 0 auto;"/>
             </div>
           </div>
         </div>
@@ -166,10 +170,13 @@
               <p class="is-size-6 has-text-grey">A comprehensive dataset with 12,987 anomaly-mask-caption triplets from 13 public datasets.</p>
             </div>
             <div class="column is-full has-text-centered">
-              <!-- 放大1.3倍，保持比例和居中 -->
-              <div style="transform: scale(1.3); transform-origin: center; overflow: visible;">
-                <img src="static/images/dataset.png" alt="AnomVerse Dataset" style="max-height: 400px; width: auto; object-fit: contain;"/>
-              </div>
+              <!-- 与method图保持一致的放大比例 -->
+              <img src="static/images/dataset.png" alt="AnomVerse Dataset" 
+                   style="max-height: 520px; /* 原400px基础上增加30% */
+                          width: 90%; /* 增加宽度占比 */
+                          max-width: none;
+                          object-fit: contain;
+                          margin: 0 auto;"/>
             </div>
           </div>
         </div>
