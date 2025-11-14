@@ -10,11 +10,11 @@
 &nbsp;&nbsp;&nbsp;&nbsp;<a href='https://github.com/hui-zhang-cas' target='_blank'>Hui Zhang</a><sup>2</sup>&emsp;
 &nbsp;&nbsp;&nbsp;&nbsp;<a href='https://github.com/qiyu-chen-ia' target='_blank'>Qiyu Chen</a><sup>4</sup>&emsp;
 &nbsp;&nbsp;&nbsp;&nbsp;<a href='https://github.com/haiming-yao-tsinghua' target='_blank'>Haiming Yao</a><sup>3</sup>&emsp;
-&nbsp;&nbsp;&nbsp;&nbsp;<a href='https://wshen.ieee.org/' target='_blank'>Weiming Shen</a><sup>1,\dagger</sup>&emsp;
+&nbsp;&nbsp;&nbsp;&nbsp;<a href='https://wshen.ieee.org/' target='_blank'>Weiming Shen</a><sup>1, *</sup>&emsp;
 &nbsp;&nbsp;&nbsp;&nbsp;<a href='https://caoyunkang.github.io/' target='_blank'>Yunkang Cao</a><sup>2, *</sup>
 </div>
 <div>
-&nbsp;&nbsp;&nbsp;&nbsp;<sup>1</sup>Huazhong University of Science and Technology, &nbsp;&nbsp;&nbsp;&nbsp;<sup>2</sup>Hunan University, &nbsp;&nbsp;&nbsp;&nbsp;<sup>3</sup>Tsinghua University\\
+&nbsp;&nbsp;&nbsp;&nbsp;<sup>1</sup>Huazhong University of Science and Technology, &nbsp;&nbsp;&nbsp;&nbsp;<sup>2</sup>Hunan University, &nbsp;&nbsp;&nbsp;&nbsp;<sup>3</sup>Tsinghua University
 &nbsp;&nbsp;&nbsp;&nbsp;<sup>4</sup>Institute of Automation, Chinese Academy of Sciences
 </div>
 
