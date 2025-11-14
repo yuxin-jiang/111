@@ -38,16 +38,16 @@
   <script src="static/js/index.js"></script>
 
   <style>
-    /* 统一控制主标题与子标题的间距 */
+    /* 控制标题间距 */
     .section-title {
-      margin-bottom: 1rem !important; /* 减小主标题下方间距 */
+      margin-bottom: 1rem !important;
     }
     .carousel-subtitle {
-      margin-top: 0.5rem !important; /* 减小子标题上方间距 */
-      margin-bottom: 0.75rem !important; /* 减小子标题下方间距 */
+      margin-top: 0.5rem !important;
+      margin-bottom: 0.75rem !important;
     }
     .carousel-desc {
-      margin-bottom: 1rem !important; /* 控制描述文字下方间距 */
+      margin-bottom: 1rem !important;
     }
   </style>
 </head>
@@ -145,48 +145,22 @@
   </div>
 </section>
 
-<!-- Method & Dataset Section -->
+<!-- Method Section - 仅保留Method内容，移除轮播 -->
 <section class="section">
   <div class="container is-max-desktop">
-    <!-- 主标题添加自定义类控制间距 -->
-    <h2 class="title is-3 has-text-centered section-title">Method & Dataset</h2>
-    <div id="method-carousel" class="carousel results-carousel" style="padding: 10px 0 30px;">
-      <!-- Method Framework -->
-      <div class="item">
-        <div class="columns is-multiline">
-          <div class="column is-full has-text-centered">
-            <!-- 子标题添加自定义类控制间距 -->
-            <h3 class="subtitle is-4 carousel-subtitle">Overall Framework of Anomagic</h3>
-            <!-- 描述文字添加自定义类控制间距 -->
-            <p class="is-size-6 has-text-grey carousel-desc">The crossmodal prompt-driven zero-shot anomaly generation pipeline with contrastive refinement.</p>
-          </div>
-          <div class="column is-full has-text-centered">
-            <img src="static/images/method.png" alt="Anomagic Framework" 
-                 style="max-height: 520px;
-                        width: 90%;
-                        max-width: none;
-                        object-fit: contain;
-                        margin: 0 auto;"/>
-          </div>
-        </div>
+    <h2 class="title is-3 has-text-centered section-title">Method</h2>
+    <div class="columns is-multiline">
+      <div class="column is-full has-text-centered">
+        <h3 class="subtitle is-4 carousel-subtitle">Overall Framework of Anomagic</h3>
+        <p class="is-size-6 has-text-grey carousel-desc">The crossmodal prompt-driven zero-shot anomaly generation pipeline with contrastive refinement.</p>
       </div>
-
-      <!-- Dataset Overview -->
-      <div class="item">
-        <div class="columns is-multiline">
-          <div class="column is-full has-text-centered">
-            <h3 class="subtitle is-4 carousel-subtitle">Overview of AnomVerse</h3>
-            <p class="is-size-6 has-text-grey carousel-desc">A comprehensive dataset with 12,987 anomaly-mask-caption triplets from 13 public datasets.</p>
-          </div>
-          <div class="column is-full has-text-centered">
-            <img src="static/images/dataset.png" alt="AnomVerse Dataset" 
-                 style="max-height: 520px;
-                        width: 90%;
-                        max-width: none;
-                        object-fit: contain;
-                        margin: 0 auto;"/>
-          </div>
-        </div>
+      <div class="column is-full has-text-centered">
+        <img src="static/images/method.png" alt="Anomagic Framework" 
+             style="max-height: 520px;
+                    width: 90%;
+                    max-width: none;
+                    object-fit: contain;
+                    margin: 0 auto;"/>
       </div>
     </div>
   </div>
@@ -195,7 +169,6 @@
 <!-- Inference Results -->
 <section class="section">
   <div class="container is-max-desktop">
-    <!-- 主标题添加自定义类控制间距 -->
     <h2 class="title is-3 has-text-centered section-title">Anomaly Inference Results</h2>
     <div id="results-carousel" class="carousel results-carousel">
       <!-- Industrial Datasets -->
@@ -270,17 +243,9 @@
   </div>
 </footer>
 
-<!-- Carousel Initialization Script -->
+<!-- Carousel Initialization Script - 仅保留结果轮播初始化 -->
 <script>
   $(document).ready(function() {
-    $('#method-carousel').carousel({
-      slidesPerPage: 1,
-      loop: true,
-      autoplay: true,
-      autoplaySpeed: 5000,
-      pagination: true
-    });
-    
     $('#results-carousel').carousel({
       slidesPerPage: 1,
       loop: true,
