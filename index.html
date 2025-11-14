@@ -7,14 +7,12 @@
   <meta property="og:title" content="Anomagic: Crossmodal Prompt-driven Zero-shot Anomaly Generation"/>
   <meta property="og:description" content="A zero-shot anomaly generation method using crossmodal prompts, accepted at AAAI 2026"/>
   <meta property="og:url" content="https://yuxin-jiang.github.io/Anomagic"/>
-  <!-- Replace with your banner image -->
   <meta property="og:image" content="static/images/method.png" />
   <meta property="og:image:width" content="1200"/>
   <meta property="og:image:height" content="630"/>
 
   <meta name="twitter:title" content="Anomagic: Crossmodal Prompt-driven Zero-shot Anomaly Generation">
   <meta name="twitter:description" content="A zero-shot anomaly generation method using crossmodal prompts">
-  <!-- Replace with your twitter banner image -->
   <meta name="twitter:image" content="static/images/method.png">
   <meta name="twitter:card" content="summary_large_image">
   
@@ -38,64 +36,6 @@
   <script src="static/js/bulma-carousel.min.js"></script>
   <script src="static/js/bulma-slider.min.js"></script>
   <script src="static/js/index.js"></script>
-
-  <style>
-    /* 翻面卡片样式 */
-    .flip-card {
-      background-color: transparent;
-      width: 100%;
-      height: 500px; /* 可根据图片比例调整 */
-      perspective: 1000px;
-      margin: 0 auto;
-    }
-
-    .flip-card-inner {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      text-align: center;
-      transition: transform 0.8s;
-      transform-style: preserve-3d;
-    }
-
-    .flip-card:hover .flip-card-inner {
-      transform: rotateY(180deg);
-    }
-
-    .flip-card-front, .flip-card-back {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      -webkit-backface-visibility: hidden;
-      backface-visibility: hidden;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .flip-card-front img, .flip-card-back img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-    }
-
-    .flip-card-back {
-      transform: rotateY(180deg);
-    }
-
-    .card-caption {
-      margin-top: 1rem;
-      font-weight: bold;
-      font-size: 1.2rem;
-    }
-
-    @media (max-width: 768px) {
-      .flip-card {
-        height: 300px;
-      }
-    }
-  </style>
 </head>
 <body>
 
@@ -142,7 +82,7 @@
                 </a>
               </span>
 
-              <!-- Paper link (替换为目标PDF链接) -->
+              <!-- Paper link -->
               <span class="link-block">
                 <a href="https://arxiv.org/pdf/2511.10020" target="_blank" class="external-link button is-normal is-rounded is-dark">
                 <span class="icon">
@@ -196,25 +136,38 @@
   </div>
 </section>
 
-<!-- 可翻面的方法与数据集展示 -->
-<section class="hero teaser">
-  <div class="container is-max-desktop">
-    <div class="hero-body">
-      <div class="flip-card">
-        <div class="flip-card-inner">
-          <!-- 正面：方法框架 -->
-          <div class="flip-card-front">
-            <img src="static/images/method.png" alt="Anomagic Method" id="teaser"/>
-            <div class="card-caption">Overall framework of Anomagic</div>
+<!-- Method & Dataset Section (与Results部分格式相同) -->
+<section class="hero is-light is-small">
+  <div class="hero-body">
+    <div class="container">
+      <h2 class="title is-3 has-text-centered">Method & Dataset</h2>
+      <div id="method-carousel" class="carousel results-carousel">
+        <!-- Method Framework -->
+        <div class="item">
+          <div class="columns is-multiline">
+            <div class="column is-full has-text-centered">
+              <h3 class="subtitle is-4">Overall Framework of Anomagic</h3>
+              <p class="is-size-6 has-text-grey">The crossmodal prompt-driven zero-shot anomaly generation pipeline with contrastive refinement.</p>
+            </div>
+            <div class="column is-full has-text-centered">
+              <img src="static/images/method.png" alt="Anomagic Framework" style="width: 80%; max-width: 800px;"/>
+            </div>
           </div>
-          <!-- 背面：数据集概览 -->
-          <div class="flip-card-back">
-            <img src="static/images/dataset.png" alt="AnomVerse Overview" id="dataset"/>
-            <div class="card-caption">Overview of AnomVerse</div>
+        </div>
+
+        <!-- Dataset Overview -->
+        <div class="item">
+          <div class="columns is-multiline">
+            <div class="column is-full has-text-centered">
+              <h3 class="subtitle is-4">Overview of AnomVerse</h3>
+              <p class="is-size-6 has-text-grey">A comprehensive dataset with 12,987 anomaly-mask-caption triplets from 13 public datasets.</p>
+            </div>
+            <div class="column is-full has-text-centered">
+              <img src="static/images/dataset.png" alt="AnomVerse Dataset" style="width: 80%; max-width: 800px;"/>
+            </div>
           </div>
         </div>
       </div>
-      <p class="has-text-centered mt-4 is-italic">Hover over the image to flip between method framework and dataset overview</p>
     </div>
   </div>
 </section>
@@ -265,13 +218,6 @@
           </div>
         </div>
       </div>
-
-      <!-- Supplementary Note -->
-      <div class="columns is-centered mt-8">
-        <div class="column is-four-fifths has-text-centered">
-          <p class="is-size-5">For complete code examples and tunable parameters (e.g., prompts, scales, masks), refer to the provided Jupyter notebooks.</p>
-        </div>
-      </div>
     </div>
   </div>
 </section>
@@ -308,6 +254,16 @@
 <!-- Carousel Initialization Script -->
 <script>
   $(document).ready(function() {
+    // 初始化方法与数据集轮播
+    $('#method-carousel').carousel({
+      slidesPerPage: 1,
+      loop: true,
+      autoplay: true,
+      autoplaySpeed: 5000,
+      pagination: true
+    });
+    
+    // 初始化结果轮播
     $('#results-carousel').carousel({
       slidesPerPage: 1,
       loop: true,
