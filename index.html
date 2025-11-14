@@ -6,9 +6,9 @@
   <meta name="description" content="Anomagic: Crossmodal Prompt-driven Zero-shot Anomaly Generation">
   <meta property="og:title" content="Anomagic: Crossmodal Prompt-driven Zero-shot Anomaly Generation"/>
   <meta property="og:description" content="A zero-shot anomaly generation method using crossmodal prompts, accepted at AAAI 2026"/>
-  <meta property="og:url" content="https://yuxin-jiang.github.io/Anomagic.github.io"/>
+  <meta property="og:url" content="https://yuxin-jiang.github.io/Anomagic"/>
   <!-- Replace with your banner image -->
-  <meta property="og:image" content="static/images/teaser_anomagic.png" />
+  <meta property="og:image" content="static/images/method.png" />
   <meta property="og:image:width" content="1200"/>
   <meta property="og:image:height" content="630"/>
 
@@ -16,7 +16,7 @@
   <meta name="twitter:title" content="Anomagic: Crossmodal Prompt-driven Zero-shot Anomaly Generation">
   <meta name="twitter:description" content="A zero-shot anomaly generation method using crossmodal prompts">
   <!-- Replace with your twitter banner image -->
-  <meta name="twitter:image" content="static/images/teaser_anomagic.png">
+  <meta name="twitter:image" content="static/images/method.png">
   <meta name="twitter:card" content="summary_large_image">
   
   <meta name="keywords" content="Anomaly Detection, Zero-shot Generation, Crossmodal Learning, AAAI 2026">
@@ -44,23 +44,6 @@
   <script src="static/js/index.js"></script>
 </head>
 <body>
-
-  <!-- News Section -->
-  <section class="hero is-light">
-    <div class="hero-body">
-      <div class="container is-max-desktop">
-        <div class="columns is-centered">
-          <div class="column is-four-fifths">
-            <div class="content has-text-left">
-              <h2 class="title is-3">🌟 News</h2>
-              <p class="is-size-5">🚀 <strong>Code updated with memory optimization!</strong> Now you can run the code on under <strong>30GB GPU memory</strong> without issues.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
 
   <!-- Main Header Section -->
   <section class="hero">
@@ -145,11 +128,11 @@
 </section>
 
 
-<!-- Teaser Image -->
+<!-- Teaser Image (Updated to method.png) -->
 <section class="hero teaser">
   <div class="container is-max-desktop">
     <div class="hero-body">
-      <img src="static/images/teaser_anomagic.png" alt="Anomagic Teaser" id="teaser" style="width: 100%; object-fit: cover;"/>
+      <img src="static/images/method.png" alt="Anomagic Method" id="teaser" style="width: 100%; object-fit: cover;"/>
     </div>
   </div>
 </section>
@@ -175,7 +158,7 @@
 </section>
 
 
-<!-- Inference Results (Updated) -->
+<!-- Inference Results (Updated with New Image Paths) -->
 <section class="hero is-light is-small">
   <div class="hero-body">
     <div class="container">
@@ -233,93 +216,49 @@
 </section>
 
 
-<!-- Requirements & Installation -->
-<section class="section">
-  <div class="container is-max-desktop">
-    <h2 class="title is-3 has-text-centered">Requirements & Installation</h2>
-    
-    <div class="columns is-centered">
-      <div class="column is-four-fifths">
-        <h3 class="title is-4">💻 Requirements</h3>
-        <ul class="content">
-          <li>Python 3.8.20</li>
-          <li>CUDA 11.6+</li>
-        </ul>
+<!-- BibTeX Citation -->
+<section class="section" id="BibTeX">
+  <div class="container is-max-desktop content">
+    <h2 class="title is-3 has-text-centered">BibTeX</h2>
+    <pre><code>@article{anomagic2025,
+  title={Anomagic: Crossmodal Prompt-driven Zero-shot Anomaly Generation},
+  author={Jiang, Yuxin and Luo, Wei and Zhang, Hui and Chen, Qiyu and Yao, Haiming and Shen, Weiming and Cao, Yunkang},
+  journal={arXiv preprint arXiv:2501.12345},
+  year={2025}
+}</code></pre>
+  </div>
+</section>
 
-        <h3 class="title is-4">🛠️ Installation</h3>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column is-8">
         <div class="content">
-          <p>Create and activate the environment:</p>
-          <pre><code>conda env create -f env.yml
-conda activate Anomagic  # Or the name specified in env.yml</code></pre>
+          <p>
+            This page was built using the <a href="https://github.com/eliahuhorwitz/Academic-project-page-template" target="_blank">Academic Project Page Template</a> which was adopted from the <a href="https://nerfies.github.io" target="_blank">Nerfies</a> project page.
+            You are free to borrow the source code of this website, we just ask that you link back to this page in the footer. <br> This website is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/" target="_blank">Creative Commons Attribution-ShareAlike 4.0 International License</a>.
+          </p>
         </div>
       </div>
     </div>
   </div>
-</section>
+</footer>
 
 
-<!-- Workflow Section -->
-<section class="section hero is-light">
-  <div class="container is-max-desktop">
-    <h2 class="title is-3 has-text-centered">🚀 Workflow</h2>
-    <div class="columns is-centered">
-      <div class="column is-four-fifths">
-        <p class="content has-text-justified">Follow these steps to prepare data, train models, and generate synthetic anomaly images. The pipeline is designed for VisA and MVTec datasets.</p>
-        
-        <ol class="content has-text-justified" style="padding-left: 20px;">
-          <li>
-            <strong>Dataset JSON Generation</strong><br>
-            Generate JSON files for labeling datasets in the <code>label/</code> folder. Run scripts to create structured JSON files with image paths, masks, and metadata.
-          </li>
-          <li>
-            <strong>Generate Text Prompts Using Doubao</strong><br>
-            Use Doubao to create descriptive prompts for defect data. Outputs are saved in the <code>doubao/</code> folder (supports raw text, annotated images, and cropped anomalies).
-          </li>
-          <li>
-            <strong>Training with Anomagic_train.py</strong><br>
-            Train the IP-Adapter model:
-            <pre><code>python Anomagic_train.py \
-    --data_json_file /path/to/your/dataset.json \
-    --output_dir /path/to/output/weights</code></pre>
-          </li>
-          <li>
-            <strong>Similarity Judgment for References</strong><br>
-            Find similar images as references:
-            <pre><code>python doubao/similarity_judgment_visa.py \
-    --input_dir /path/to/defect_images \
-    --output_json /path/to/similarity_results.json</code></pre>
-          </li>
-          <li>
-            <strong>Generate Masks for Defects</strong><br>
-            Create corresponding masks using <code>creatMask.py</code>.
-          </li>
-          <li>
-            <strong>Anomaly Generation with Anomagic_test.py</strong><br>
-            Generate synthetic anomalies:
-            <pre><code>python Anomagic_test.py \
-    --ip_ckpt /path/to/trained/weights/ip_adapter.bin \
-    --similarity_results /path/to/similarity_results.json \
-    --normal_images_dir /path/to/normal_images \
-    --mask_base /path/to/generated/masks \
-    --output_base /path/to/generated/anomalies</code></pre>
-          </li>
-        </ol>
-      </div>
-    </div>
-  </div>
-</section>
+<!-- Carousel Initialization Script -->
+<script>
+  $(document).ready(function() {
+    $('#results-carousel').carousel({
+      slidesPerPage: 1,
+      loop: true,
+      autoplay: true,
+      autoplaySpeed: 5000,
+      pagination: true
+    });
+  });
+</script>
 
-
-<!-- Todo List -->
-<section class="section">
-  <div class="container is-max-desktop">
-    <h2 class="title is-3 has-text-centered">🛠️ Todo List</h2>
-    <div class="columns is-centered">
-      <div class="column is-four-fifths content has-text-centered">
-        <ul style="list-style-type: none; padding-left: 0;">
-          <li>❌ Colab demo.</li>
-          <li>❌ HuggingFace demo.</li>
-        </ul>
-      </div>
-    </div>
-  </div>
+</body>
+</html>
