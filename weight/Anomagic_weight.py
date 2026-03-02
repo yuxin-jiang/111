@@ -7,7 +7,7 @@ parser.add_argument("--ckpt_anomagic", type=str, required=True, help="Path to an
 parser.add_argument("--ckpt_att", type=str, required=True, help="Path to attention module checkpoint")
 args = parser.parse_args()
 
-sd_ip = torch.load(args.ckpt_ip, map_location="cpu")
+sd_ip = torch.load(args.ckpt_anomagic, map_location="cpu")
 
 image_proj_sd = {}
 ip_sd = {}
@@ -50,4 +50,5 @@ print(f"Model saved to: {save_path_att}")
 print("\nProcessed all key names:")
 print("----------------------------------------")
 for key in att.keys():
+
     print(key)
