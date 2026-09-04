@@ -1,5 +1,4 @@
 import os
-from typing import List
 from peft import LoraConfig, LoraModel
 import torch
 from typing import List, Optional, Union
@@ -7,12 +6,12 @@ from diffusers import StableDiffusionPipeline
 from diffusers.pipelines.controlnet import MultiControlNetModel
 from PIL import Image
 from safetensors import safe_open
-from transformers import CLIPImageProcessor, CLIPVisionModelWithProjection
+from transformers import CLIPImageProcessor, CLIPVisionModelWithProjection, CLIPTokenizer, CLIPTextModel
 import torch.nn as nn
 import math
 from .utils import is_torch2_available, get_generator
 import numpy as np
-from transformers import CLIPImageProcessor, CLIPVisionModelWithProjection, CLIPTokenizer, CLIPTextModel
+
 if is_torch2_available():
     from .attention_processor import (
         AttnProcessor2_0 as AttnProcessor,
@@ -64,9 +63,6 @@ class ImageProjModel(torch.nn.Module):
     def forward(self, image_embeds):
         embeds = image_embeds
         b = embeds.shape[0]
-        # clip_extra_context_tokens = self.proj(embeds).reshape(
-        #     -1, self.clip_extra_context_tokens, self.cross_attention_dim
-        # )
         clip_extra_context_tokens = self.proj(embeds).reshape(
             b, -1, self.cross_attention_dim
         )
@@ -109,6 +105,7 @@ class SelfAttention(nn.Module):
         width = height
         x = x.view(batch_size, channels, width, height)
         batch_size, channels, height, width = x.size()
+        
         # 计算 query, key, value
         q = self.query(x).view(batch_size, -1, height * width).permute(0, 2, 1)
         k = self.key(x).view(batch_size, -1, height * width)
@@ -121,7 +118,6 @@ class SelfAttention(nn.Module):
             # 将 mask 的尺寸调整为和 x 一致
             mask = nn.functional.interpolate(mask, size=(height, width), mode='nearest')
             mask = mask.view(batch_size, 1, height * width)
-            # c
             large_constant = 1e6
             attention_scores = attention_scores - (1 - mask) * large_constant
 
@@ -227,22 +223,22 @@ class Anomagic:
             if isinstance(pil_image, Image.Image):
                 pil_image = [pil_image]
             clip_image = self.clip_image_processor(images=pil_image, return_tensors="pt").pixel_values
-            clip_image_embeds = self.image_encoder(clip_image.to(self.device, dtype=torch.float16)).image_embeds
             outputs = self.image_encoder(clip_image.to(self.device, dtype=torch.float16))
             clip_image_embeds = outputs.image_embeds
             last_feature_layer_output = outputs.last_hidden_state
         else:
             clip_image_embeds = clip_image_embeds.to(self.device, dtype=torch.float16)
-        image_prompt_embeds = self.image_proj_model(clip_image_embeds)
+
         mask_image_0 = mask_image_0.resize((64, 64))
         mask_image_0 = mask_image_0.convert('L')
         mask_image_0 = torch.tensor(np.array(mask_image_0), dtype=torch.float32)
         mask_image_0 = (mask_image_0 > 0.5).float().to(self.device)
-        image_embeds = self.attention_module(last_feature_layer_output[:, :256, :].float(),
-                                             mask_image_0.unsqueeze(0).unsqueeze(0))
-        image_prompt_embeds = self.image_proj_model(image_embeds.half())
-        uncond_image_prompt_embeds = self.image_proj_model(torch.zeros_like(image_embeds).half())
-        # uncond_image_prompt_embeds = self.image_proj_model(torch.zeros_like(clip_image_embeds).half())
+
+        global_image_embeds = image_embeds.mean(dim=1)
+
+        image_prompt_embeds = self.image_proj_model(global_image_embeds.half())
+        uncond_image_prompt_embeds = self.image_proj_model(torch.zeros_like(global_image_embeds).half())
+
         return image_prompt_embeds, uncond_image_prompt_embeds
 
     def set_scale(self, scale):
@@ -251,173 +247,55 @@ class Anomagic:
                 attn_processor.scale = scale
 
     def encode_long_text(self,
-            input_ids: torch.Tensor,  # 直接传入token IDs
+            input_ids: torch.Tensor,
             tokenizer: CLIPTokenizer,
             text_encoder: CLIPTextModel,
-            max_length: int = 77,  # CLIP的token限制
+            max_length: int = 77,
             device: str = "cuda"
     ) -> torch.Tensor:
         """
-        分段编码已经tokenize的长文本，合并所有段的特征取平均
-
-        Args:
-            input_ids: 已经tokenize的输入ID [batch_size, seq_len] 或 [seq_len]
-            tokenizer: CLIP的tokenizer (用于提供特殊token信息)
-            text_encoder: CLIP的text_encoder
-            max_length: 单段最大token数（默认77）
-            device: 计算设备
-
-        Returns:
-            combined_embeddings: 合并后的文本特征 [batch_size, hidden_dim]
+        分段编码长文本并合并
         """
-        # 确保输入是2D tensor [batch_size, seq_len]
         if input_ids.dim() == 1:
-            input_ids = input_ids.unsqueeze(0)  # [1, seq_len]
+            input_ids = input_ids.unsqueeze(0)
 
         batch_size = input_ids.size(0)
         hidden_dim = text_encoder.config.hidden_size
-
-        # 初始化结果张量
         combined_embeddings = torch.zeros(batch_size, hidden_dim, device=device)
 
         for batch_idx in range(batch_size):
-            # 获取当前batch的token IDs
-            current_input_ids = input_ids[batch_idx]  # [seq_len]
-
-            # 1. 按max_length分段
+            current_input_ids = input_ids[batch_idx]
             chunks = [
                 current_input_ids[i:i + max_length]
                 for i in range(0, len(current_input_ids), max_length)
             ]
 
-            # 2. 对每段编码并收集特征
             embeddings = []
             for chunk in chunks:
-                # 添加batch维度并padding到max_length
                 chunk_len = len(chunk)
                 padding_len = max_length - chunk_len
 
-                # 构建模型输入
                 chunk_input = {
                     "input_ids": torch.cat([
-                        chunk.unsqueeze(0).to(device),  # [1, chunk_len]
-                        torch.zeros(1, padding_len, dtype=torch.long, device=device)  # [1, padding_len]
-                    ], dim=1),  # [1, max_length]
-
+                        chunk.unsqueeze(0).to(device),
+                        torch.zeros(1, padding_len, dtype=torch.long, device=device)
+                    ], dim=1),
                     "attention_mask": torch.cat([
-                        torch.ones(1, chunk_len, dtype=torch.long, device=device),  # [1, chunk_len]
-                        torch.zeros(1, padding_len, dtype=torch.long, device=device)  # [1, padding_len]
-                    ], dim=1)  # [1, max_length]
+                        torch.ones(1, chunk_len, dtype=torch.long, device=device),
+                        torch.zeros(1, padding_len, dtype=torch.long, device=device)
+                    ], dim=1)
                 }
 
                 with torch.no_grad():
-                    chunk_emb = text_encoder(**chunk_input).last_hidden_state  # [1, max_length, hidden_dim]
-                    # 只取非padding部分的特征并平均
+                    chunk_emb = text_encoder(**chunk_input).last_hidden_state
                     embeddings.append(chunk_emb[:, :chunk_len, :].mean(dim=1))
 
-            # 3. 合并所有段的特征（平均）
-            if embeddings:  # 确保有embedding
+            if embeddings:
                 combined_embeddings[batch_idx] = torch.mean(torch.cat(embeddings, dim=0), dim=0)
             else:
-                # 处理空输入情况
                 combined_embeddings[batch_idx] = torch.zeros(hidden_dim, device=device)
 
         return combined_embeddings.unsqueeze(1)
-    # def encode_long_text(
-    #         self,
-    #         text: Union[str, List[str]],
-    #         tokenizer: CLIPTokenizer,
-    #         text_encoder: CLIPTextModel,
-    #         max_length: int = 77,
-    #         device: Optional[str] = None
-    # ) -> torch.Tensor:
-    #     """
-    #     Encode long text by splitting into chunks and averaging embeddings
-    #
-    #     Args:
-    #         text: Input text or list of texts
-    #         tokenizer: CLIP tokenizer
-    #         text_encoder: CLIP text encoder
-    #         max_length: Maximum token length per chunk
-    #         device: Device to use (defaults to self.device)
-    #
-    #     Returns:
-    #         torch.Tensor: Text embeddings [batch_size, seq_len, hidden_dim]
-    #     """
-    #     device = device or self.device
-    #
-    #     # Tokenize input text
-    #     if isinstance(text, str):
-    #         text = [text]
-    #
-    #     # Tokenize without truncation
-    #     inputs = tokenizer(
-    #         text,
-    #         padding=False,
-    #         truncation=False,
-    #         return_tensors="pt",
-    #         max_length=None
-    #     )
-    #     input_ids = inputs.input_ids.to(device)
-    #     attention_mask = inputs.attention_mask.to(device) if "attention_mask" in inputs else None
-    #
-    #     batch_size, seq_len = input_ids.shape
-    #
-    #     # Calculate number of chunks needed
-    #     num_chunks = (seq_len + max_length - 1) // max_length
-    #
-    #     # Initialize embeddings tensor
-    #     embeddings = []
-    #
-    #     for i in range(num_chunks):
-    #         start_idx = i * max_length
-    #         end_idx = (i + 1) * max_length
-    #
-    #         # Get chunk
-    #         chunk_input_ids = input_ids[:, start_idx:end_idx]
-    #         chunk_attention_mask = attention_mask[:, start_idx:end_idx] if attention_mask is not None else None
-    #
-    #         # Pad if needed
-    #         padding_len = max_length - chunk_input_ids.shape[1]
-    #         if padding_len > 0:
-    #             padding = torch.zeros(batch_size, padding_len, dtype=torch.long, device=device)
-    #             chunk_input_ids = torch.cat([chunk_input_ids, padding], dim=1)
-    #             if chunk_attention_mask is not None:
-    #                 chunk_attention_mask = torch.cat([
-    #                     chunk_attention_mask,
-    #                     torch.zeros(batch_size, padding_len, dtype=torch.long, device=device)
-    #                 ], dim=1)
-    #
-    #         # Encode chunk
-    #         with torch.no_grad():
-    #             outputs = text_encoder(
-    #                 input_ids=chunk_input_ids,
-    #                 attention_mask=chunk_attention_mask,
-    #                 return_dict=True
-    #             )
-    #             chunk_embeddings = outputs.last_hidden_state
-    #
-    #             # Apply attention mask if available
-    #             if chunk_attention_mask is not None:
-    #                 chunk_embeddings = chunk_embeddings * chunk_attention_mask.unsqueeze(-1)
-    #
-    #             # Average over sequence length (excluding padding)
-    #             if chunk_attention_mask is not None:
-    #                 valid_lengths = chunk_attention_mask.sum(dim=1, keepdim=True)
-    #                 chunk_embeddings = (chunk_embeddings.sum(dim=1) / valid_lengths.clamp(min=1))
-    #             else:
-    #                 chunk_embeddings = chunk_embeddings.mean(dim=1)
-    #
-    #             embeddings.append(chunk_embeddings)
-    #
-    #     # Combine chunk embeddings by averaging
-    #     if embeddings:
-    #         combined_embeddings = torch.stack(embeddings, dim=1)  # [batch_size, num_chunks, hidden_dim]
-    #         combined_embeddings = combined_embeddings.mean(dim=1)  # [batch_size, hidden_dim]
-    #     else:
-    #         combined_embeddings = torch.zeros(batch_size, text_encoder.config.hidden_size, device=device)
-    #
-    #     return combined_embeddings.unsqueeze(1)  # Add sequence dimension [batch_size, 1, hidden_dim]
 
     def generate(
             self,
@@ -429,7 +307,6 @@ class Anomagic:
             num_samples=4,
             seed=None,
             guidance_scale=7.5,
-            # guidance_scale=10,
             num_inference_steps=30,
             mask_image_0=None,
             **kwargs,
@@ -445,7 +322,7 @@ class Anomagic:
             prompt = "best quality, high quality"
         if negative_prompt is None:
             negative_prompt = "monochrome, lowres, bad anatomy, worst quality, low quality"
-        # print("prompt:", prompt)
+
         if not isinstance(prompt, List):
             prompt = [prompt] * num_prompts
         if not isinstance(negative_prompt, List):
@@ -461,10 +338,8 @@ class Anomagic:
         uncond_image_prompt_embeds = uncond_image_prompt_embeds.view(bs_embed * num_samples, seq_len, -1)
 
         with torch.inference_mode():
-            # 编码文本提示（统一使用长文本分段编码）
             prompt_embeds_list = []
             for p in prompt:
-                # 1. 文本转 token IDs
                 inputs = self.pipe.tokenizer(
                     p,
                     padding="max_length",
@@ -472,21 +347,19 @@ class Anomagic:
                     truncation=True,
                     return_tensors="pt"
                 )
-                input_ids = inputs.input_ids.to(self.device)  # [1, seq_len]
+                input_ids = inputs.input_ids.to(self.device)
 
-                # 2. 调用长文本编码函数（无论是否超长）
                 prompt_embed = self.encode_long_text(
                     input_ids=input_ids,
                     tokenizer=self.pipe.tokenizer,
                     text_encoder=self.pipe.text_encoder,
                     device=self.device
-                )  # 返回 [1, hidden_dim]
+                )
 
                 prompt_embeds_list.append(prompt_embed)
 
             prompt_embeds = torch.cat(prompt_embeds_list, dim=0)
 
-            # 编码负向提示（同理，统一使用长文本处理）
             negative_prompt_embeds_list = []
             for p in negative_prompt:
                 inputs = self.pipe.tokenizer(
@@ -509,19 +382,9 @@ class Anomagic:
 
             negative_prompt_embeds = torch.cat(negative_prompt_embeds_list, dim=0)
 
-            # 合并图像嵌入与文本嵌入（保持不变）
+            # 合并图像嵌入与文本嵌入
             prompt_embeds = torch.cat([prompt_embeds, image_prompt_embeds], dim=1)
             negative_prompt_embeds = torch.cat([negative_prompt_embeds, uncond_image_prompt_embeds], dim=1)
-            # prompt_embeds = torch.cat([prompt_embeds, uncond_image_prompt_embeds], dim=1)
-            # prompt_embeds = prompt_embeds
-            # prompt_embeds = prompt_embeds.repeat(1, 1024, 1)
-            # negative_prompt_embeds = image_prompt_embeds
-            # negative_prompt_embeds = self.pipe.encode_prompt(
-            #     negative_prompt,
-            #     device=self.device,
-            #     num_images_per_prompt=num_samples,
-            #     do_classifier_free_guidance=True
-            # )[0]
 
         generator = get_generator(seed, self.device)
 
